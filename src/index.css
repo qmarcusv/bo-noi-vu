@@ -1,0 +1,206 @@
+@import "tailwindcss";
+
+:root {
+	color-scheme: dark;
+
+	/* Màu chính */
+	--color-primary-50: #fef2f2;
+	--color-primary-100: #fee2e2;
+	--color-primary-500: #ef4444;
+	--color-primary-600: #dc2626;
+	--color-primary-700: #b91c1c;
+	--color-primary-800: #991b1b;
+	--color-primary-900: #7f1d1d;
+
+	/* Màu Bộ Nội vụ */
+	--color-bo-noi-vu-light: #9b0000;
+	--color-bo-noi-vu-main: #8b0000;
+	--color-bo-noi-vu-dark: #6b0000;
+	--color-bo-noi-vu-darker: #4b0000;
+
+	/* Màu trung tính */
+	--color-white: #ffffff;
+	--color-black: #000000;
+	--color-gray-50: #f9fafb;
+	--color-gray-100: #f3f4f6;
+	--color-gray-200: #e5e7eb;
+	--color-gray-300: #d1d5db;
+	--color-gray-400: #9ca3af;
+	--color-gray-500: #6b7280;
+	--color-gray-600: #4b5563;
+	--color-gray-700: #374151;
+	--color-gray-800: #1f2937;
+	--color-gray-900: #111827;
+
+	/* Màu trạng thái */
+	--color-success: #10b981;
+	--color-warning: #f59e0b;
+	--color-error: #ef4444;
+	--color-info: #3b82f6;
+
+	/* Màu overlay */
+	--color-overlay-white-10: rgba(255, 255, 255, 0.1);
+	--color-overlay-white-15: rgba(255, 255, 255, 0.15);
+	--color-overlay-white-20: rgba(255, 255, 255, 0.2);
+	--color-overlay-white-30: rgba(255, 255, 255, 0.3);
+	--color-overlay-white-40: rgba(255, 255, 255, 0.4);
+	--color-overlay-white-50: rgba(255, 255, 255, 0.5);
+	--color-overlay-white-60: rgba(255, 255, 255, 0.6);
+	--color-overlay-white-70: rgba(255, 255, 255, 0.7);
+	--color-overlay-white-80: rgba(255, 255, 255, 0.8);
+	--color-overlay-white-90: rgba(255, 255, 255, 0.9);
+
+	--color-overlay-black-5: rgba(0, 0, 0, 0.05);
+	--color-overlay-black-10: rgba(0, 0, 0, 0.1);
+	--color-overlay-black-20: rgba(0, 0, 0, 0.2);
+	--color-overlay-black-30: rgba(0, 0, 0, 0.3);
+	--color-overlay-black-40: rgba(0, 0, 0, 0.4);
+	--color-overlay-black-50: rgba(0, 0, 0, 0.5);
+	--color-overlay-black-60: rgba(0, 0, 0, 0.6);
+	--color-overlay-black-70: rgba(0, 0, 0, 0.7);
+	--color-overlay-black-80: rgba(0, 0, 0, 0.8);
+	--color-overlay-black-90: rgba(0, 0, 0, 0.9);
+}
+
+html,
+body,
+#root {
+	height: 100%;
+}
+
+/* Ẩn thanh cuộn dọc */
+html {
+	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+html::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera */
+}
+
+body {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+	display: none;
+}
+
+#root {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+#root::-webkit-scrollbar {
+	display: none;
+}
+
+/* Ẩn thanh cuộn cho tất cả các phần tử con */
+* {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+	display: none;
+}
+
+.aspect-16-9 {
+	aspect-ratio: 16 / 9;
+}
+
+/* Custom CSS for vertical text writing */
+.writing-mode-vertical {
+	writing-mode: vertical-rl;
+	text-orientation: mixed;
+	transform: rotate(180deg);
+}
+
+/* Responsive design for large touch screens */
+@layer utilities {
+	/* Large screen breakpoint (1920px+) */
+	@media (min-width: 1920px) {
+		.text-5xl {
+			font-size: 4rem;
+			line-height: 1.1;
+		}
+		.text-6xl {
+			font-size: 5rem;
+			line-height: 1.1;
+		}
+		.text-4xl {
+			font-size: 3.5rem;
+			line-height: 1.2;
+		}
+		.text-3xl {
+			font-size: 2.5rem;
+			line-height: 1.2;
+		}
+		.text-2xl {
+			font-size: 2rem;
+			line-height: 1.3;
+		}
+		.text-xl {
+			font-size: 1.75rem;
+			line-height: 1.3;
+		}
+		.text-lg {
+			font-size: 1.5rem;
+			line-height: 1.4;
+		}
+	}
+
+	/* Touch-friendly sizing for large screens */
+	@media (pointer: coarse) and (min-width: 1920px) {
+		.touch-target {
+			min-height: 56px;
+			min-width: 56px;
+		}
+		.touch-button {
+			min-height: 64px;
+			min-width: 64px;
+		}
+		.touch-navbar {
+			min-height: 80px;
+		}
+	}
+
+	/* Layout optimization for large screens */
+	@media (min-width: 1920px) {
+		.max-w-screen-2xl {
+			max-width: 1536px;
+		}
+		.container-large {
+			max-width: 1400px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+
+	/* Improved spacing for large screens */
+	@media (min-width: 1920px) {
+		.space-large {
+			gap: 3rem;
+		}
+		.padding-large {
+			padding: 2rem;
+		}
+		.margin-large {
+			margin: 2rem;
+		}
+	}
+}
+
+/* Touch-friendly hover states */
+@media (pointer: coarse) {
+	.hover\:opacity-90:hover {
+		opacity: 1;
+	}
+	.hover\:bg-black\/5:hover {
+		background-color: rgba(0, 0, 0, 0.1);
+	}
+	.hover\:bg-white\/15:hover {
+		background-color: rgba(255, 255, 255, 0.2);
+	}
+}
