@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import { getAssetPath } from "../utils/assets";
 
 export default function Home() {
 	const { t } = useTranslation();
@@ -16,7 +17,7 @@ export default function Home() {
 		<section
 			className="relative min-h-screen w-full overflow-hidden text-white"
 			style={{
-				backgroundImage: "url('/assets/red-background.png')",
+				backgroundImage: `url('${getAssetPath("/assets/red-background.png")}')`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 			}}
@@ -32,7 +33,7 @@ export default function Home() {
 				{/* LOGO BỘ NỘI VỤ Ở GIỮA TRÊN */}
 				<div className="pt-8 sm:pt-10 md:pt-12 lg:pt-14 flex flex-col items-center">
 					<img
-						src="/assets/bo-noi-vu-icon.png"
+						src={getAssetPath("/assets/bo-noi-vu-icon.png")}
 						alt={t("common.boNoiVu")}
 						className="select-none"
 						draggable={false}
@@ -50,7 +51,7 @@ export default function Home() {
 					<div className="w-full max-w-[960px]">
 						<div className="relative aspect-[16/9] rounded-2xl ring-1 ring-white/20 bg-black/25 overflow-hidden">
 							<div className="absolute inset-0 flex items-center justify-center">
-								<div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center ring-1 ring-white/30">
+								<div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:w-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center ring-1 ring-white/30">
 									<svg viewBox="0 0 24 24" className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 fill-white">
 										<path d="M8 5v14l11-7z" />
 									</svg>
@@ -69,7 +70,7 @@ export default function Home() {
 					onClick={handleStartExplore}
 					aria-label={t("common.startExploring")}
 					style={{
-						backgroundImage: "url('/assets/text-background.png')",
+						backgroundImage: `url('${getAssetPath("/assets/text-background.png")}')`,
 						backgroundSize: "cover",
 						backgroundPosition: "center",
 					}}
@@ -79,7 +80,7 @@ export default function Home() {
 
 				{/* MŨI TÊN XUỐNG VỚI DOWN-ARROW.PNG */}
 				<img
-					src="/assets/down-arrow.png"
+					src={getAssetPath("/assets/down-arrow.png")}
 					onClick={handleStartExplore}
 					alt=""
 					className="mb-6 sm:mb-8 md:mb-10 opacity-95 select-none cursor-pointer"

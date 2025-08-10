@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { getAssetPath } from "../utils/assets";
 
 type Item = {
 	key: "timeline" | "map" | "gallery" | "experience";
@@ -48,12 +49,12 @@ export default function Menu() {
 	const bg = useMemo(
 		() => ({
 			active: {
-				backgroundImage: "url('/assets/red-component-background.png')",
+				backgroundImage: `url('${getAssetPath("/assets/red-component-background.png")}')`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 			} as const,
 			inactive: {
-				backgroundImage: "url('/assets/gray-component-background.png')",
+				backgroundImage: `url('${getAssetPath("/assets/gray-component-background.png")}')`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 			} as const,
@@ -73,25 +74,14 @@ export default function Menu() {
 		<div
 			className="h-full w-full flex flex-col items-center justify-center"
 			style={{
-				backgroundImage: "url('/assets/white-background.png')",
+				backgroundImage: `url('${getAssetPath("/assets/white-background.png")}')`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 			}}
 		>
 			{/* LOGO BỘ NỘI VỤ Ở TRÊN */}
 			<div className="flex flex-col items-center mb-8">
-				<img
-					src="/assets/bo-noi-vu-icon.png"
-					alt={t("common.boNoiVu")}
-					className="select-none"
-					draggable={false}
-					style={{
-						width: "80px",
-						height: "100px",
-						maxWidth: "80px",
-						maxHeight: "100px",
-					}}
-				/>
+				<img src={getAssetPath("/assets/bo-noi-vu-icon.png")} alt="Bộ Nội vụ" className="h-16 w-16 object-contain" />
 			</div>
 
 			{/* 4 KHUNG NỘI DUNG THEO HÀNG NGANG */}

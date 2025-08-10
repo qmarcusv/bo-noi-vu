@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import MainNavbar from "../components/MainNavbar"; // dùng NavBar có sẵn
 import { boNoiVu, neutral, overlay } from "../constants/colors";
+import { getAssetPath } from "../utils/assets";
 
 type TabKey = "timeline" | "map" | "media" | "zone";
 type Unit = { id: string; name: string; short?: string; link?: string; logo?: string };
@@ -37,11 +38,6 @@ const PUB_UNITS: Unit[] = [
 export default function Map() {
 	const { t } = useTranslation();
 	const [, setActiveTab] = useState<TabKey>("map");
-	// const allUnits = useMemo(() => {
-	// 	const m: Record<string, Unit> = {};
-	// 	[...ADMIN_UNITS, ...PUB_UNITS].forEach((u) => (m[u.id] = u));
-	// 	return m;
-	// }, []);
 
 	return (
 		<div className="h-screen w-full relative overflow-hidden">
@@ -49,12 +45,12 @@ export default function Map() {
 			<div className="absolute inset-0 flex">
 				{/* LEFT: rear-rectangle (giữ tỉ lệ, cao 100%) */}
 				<div className="relative h-full flex-none overflow-hidden">
-					<img src="/assets/rear-rectangle.png" alt="" className="h-full w-auto object-contain" />
+					<img src={getAssetPath("/assets/rear-rectangle.png")} alt="" className="h-full w-auto object-contain" />
 				</div>
 
 				{/* RIGHT: white area */}
 				<div className="relative h-full flex-1">
-					<img src="/assets/white-background.png" alt="" className="absolute inset-0 h-full w-full object-cover" />
+					<img src={getAssetPath("/assets/white-background.png")} alt="" className="absolute inset-0 h-full w-full object-cover" />
 
 					{/* Home */}
 					<button
@@ -66,7 +62,7 @@ export default function Map() {
 						}}
 						className="absolute right-6 top-6 z-20 h-12 w-12 grid place-items-center cursor-pointer hover:opacity-90"
 					>
-						<img src="/assets/home-icon.png" alt="Home" className="h-12 w-12 object-contain" />
+						<img src={getAssetPath("/assets/home-icon.png")} alt="Home" className="h-12 w-12 object-contain" />
 					</button>
 
 					{/* Content: 80% width, chừa 10% đáy cho NavBar có sẵn */}

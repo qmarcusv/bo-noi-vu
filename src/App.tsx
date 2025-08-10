@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect, useRef, useState, type JSX } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { getAssetPath } from "./utils/assets";
 
 const Home = lazy(() => import("./pages/Home"));
 const Menu = lazy(() => import("./pages/Menu"));
@@ -48,7 +49,7 @@ function LazySlide({ def, index }: { def: SlideDef; index: number }) {
 			id={def.id}
 			className="h-screen w-full snap-start"
 			style={{
-				backgroundImage: def.bg ? `url('${def.bg}')` : undefined,
+				backgroundImage: def.bg ? `url('${getAssetPath(def.bg)}')` : undefined,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 			}}

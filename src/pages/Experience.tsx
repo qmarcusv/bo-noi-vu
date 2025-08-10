@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MainNavbar from "../components/MainNavbar";
+import { getAssetPath } from "../utils/assets";
 
 type TabKey = "timeline" | "map" | "media" | "zone";
 
@@ -12,12 +13,12 @@ export default function Experience() {
 			<div className="absolute inset-0 flex">
 				{/* LEFT: rear-rectangle giữ tỉ lệ, luôn cao 100% */}
 				<div className="relative h-full flex-none overflow-hidden">
-					<img src="/assets/rear-rectangle.png" alt="" className="h-full w-auto object-contain select-none" draggable={false} />
+					<img src={getAssetPath("/assets/rear-rectangle.png")} alt="" className="h-full w-auto object-contain select-none" draggable={false} />
 				</div>
 
 				{/* RIGHT: white background area */}
 				<div className="relative h-full flex-1">
-					<img src="/assets/white-background.png" alt="" className="absolute inset-0 h-full w-full object-cover" />
+					<img src={getAssetPath("/assets/white-background.png")} alt="" className="absolute inset-0 h-full w-full object-cover" />
 
 					{/* Home icon */}
 					<button
@@ -29,7 +30,7 @@ export default function Experience() {
 						}}
 						className="absolute right-6 top-6 z-20 h-12 w-12 grid place-items-center cursor-pointer hover:opacity-90"
 					>
-						<img src="/assets/home-icon.png" alt="Home" className="h-12 w-12 object-contain" />
+						<img src={getAssetPath("/assets/home-icon.png")} alt="Home" className="h-12 w-12 object-contain" />
 					</button>
 
 					{/* Content: 80% width, chừa 10% đáy cho NavBar */}
@@ -91,7 +92,7 @@ export default function Experience() {
 
 					{/* MainNavbar ở cuối trang */}
 					<div className="absolute bottom-0 left-0 right-0 h-[10%] z-20">
-						<MainNavbar active="media" onChange={setActiveTab} />
+						<MainNavbar active="zone" onChange={setActiveTab} />
 					</div>
 				</div>
 			</div>

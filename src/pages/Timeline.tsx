@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import MainNavbar from "../components/MainNavbar";
 import { boNoiVu, neutral, overlay } from "../constants/colors";
+import { getAssetPath } from "../utils/assets";
 
 type TimelineEvent = {
 	year: string;
@@ -45,14 +46,14 @@ export default function Timeline() {
 		<div className="h-screen w-full relative overflow-hidden">
 			{/* Layout nền */}
 			<div className="absolute inset-0 flex">
-				{/* LEFT: rear-rectangle — giữ tỷ lệ, luôn cao 100%, rộng tự điều chỉnh */}
-				<div className="relative h-full flex-none shrink-0 overflow-hidden">
-					<img id="rear-rectangle" src="/assets/rear-rectangle.png" alt="" className="h-full w-auto object-contain select-none" draggable={false} />
+				{/* LEFT: rear-rectangle giữ tỉ lệ, luôn cao 100% */}
+				<div className="relative h-full flex-none overflow-hidden">
+					<img id="rear-rectangle" src={getAssetPath("/assets/rear-rectangle.png")} alt="" className="h-full w-auto object-contain select-none" draggable={false} />
 				</div>
 
-				{/* RIGHT: white area chiếm phần còn lại */}
+				{/* RIGHT: white background area */}
 				<div className="relative h-full flex-1">
-					<img src="/assets/white-background.png" alt="" className="absolute inset-0 h-full w-full object-cover" />
+					<img src={getAssetPath("/assets/white-background.png")} alt="" className="absolute inset-0 h-full w-full object-cover" />
 
 					{/* Icon Home ở góc trên phải trong vùng trắng */}
 					<button
@@ -65,7 +66,7 @@ export default function Timeline() {
 						aria-label="home"
 						className="absolute right-6 top-6 z-20 h-12 w-12 rounded-full grid place-items-center hover:opacity-90 cursor-pointer"
 					>
-						<img src="/assets/home-icon.png" alt="Home" className="h-12 w-12 object-contain" />
+						<img src={getAssetPath("/assets/home-icon.png")} alt="Home" className="h-12 w-12 object-contain" />
 					</button>
 
 					{/* Vùng nội dung 80% chiều ngang, chừa 10% đáy cho navbar */}

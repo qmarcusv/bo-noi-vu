@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import MainNavbar from "../components/MainNavbar";
+import { getAssetPath } from "../utils/assets";
 
 type VideoItem = {
 	id: string;
@@ -115,14 +116,14 @@ export default function Gallery() {
 		<div className="h-screen w-full relative overflow-hidden">
 			{/* BG layout */}
 			<div className="absolute inset-0 flex">
-				{/* Left strip */}
+				{/* LEFT: rear-rectangle giữ tỉ lệ, luôn cao 100% */}
 				<div className="relative h-full flex-none overflow-hidden">
-					<img src="/assets/rear-rectangle.png" alt="" className="h-full w-auto object-contain" />
+					<img src={getAssetPath("/assets/rear-rectangle.png")} alt="" className="h-full w-auto object-contain" />
 				</div>
 
-				{/* White area */}
+				{/* RIGHT: white background area */}
 				<div className="relative h-full flex-1">
-					<img src="/assets/white-background.png" alt="" className="absolute inset-0 h-full w-full object-cover" />
+					<img src={getAssetPath("/assets/white-background.png")} alt="" className="absolute inset-0 h-full w-full object-cover" />
 
 					{/* Home */}
 					<button
@@ -134,7 +135,7 @@ export default function Gallery() {
 						}}
 						className="absolute right-6 top-6 z-20 h-12 w-12 grid place-items-center cursor-pointer hover:opacity-90"
 					>
-						<img src="/assets/home-icon.png" alt="Home" className="h-12 w-12 object-contain" />
+						<img src={getAssetPath("/assets/home-icon.png")} alt="Home" className="h-12 w-12 object-contain" />
 					</button>
 
 					{/* Content */}
