@@ -55,7 +55,7 @@ function LazySlide({ def, index }: { def: SlideDef; index: number }) {
 			}}
 		>
 			{visible ? (
-				<Suspense fallback={<div className="h-full w-full flex items-center justify-center text-white/80">Đang tải…</div>}>
+				<Suspense fallback={<div className="h-full w-full flex items-center justify-center text-body text-white/80">Đang tải…</div>}>
 					<def.Comp />
 				</Suspense>
 			) : (

@@ -14,6 +14,7 @@ type TimelineEvent = {
 export default function Timeline() {
 	const { t } = useTranslation();
 	const [activeIdx, setActiveIdx] = useState(1);
+	const [expandedContent, setExpandedContent] = useState(false);
 	const [, setActiveTab] = useState<"timeline" | "map" | "media" | "zone">("timeline");
 
 	// Lấy dữ liệu từ file ngôn ngữ
@@ -39,8 +40,14 @@ export default function Timeline() {
 	const active = timelineEvents[activeIdx];
 	const years = useMemo(() => timelineEvents.map((e) => e.year), [timelineEvents]);
 
-	const goPrev = () => setActiveIdx((i) => (i > 0 ? i - 1 : i));
-	const goNext = () => setActiveIdx((i) => (i < timelineEvents.length - 1 ? i + 1 : i));
+	const goPrev = () => {
+		setActiveIdx((i) => (i > 0 ? i - 1 : i));
+		setExpandedContent(false); // Reset trạng thái khi chuyển event
+	};
+	const goNext = () => {
+		setActiveIdx((i) => (i < timelineEvents.length - 1 ? i + 1 : i));
+		setExpandedContent(false); // Reset trạng thái khi chuyển event
+	};
 
 	return (
 		<div className="h-screen w-full relative overflow-hidden">
@@ -71,7 +78,7 @@ export default function Timeline() {
 
 					{/* Vùng nội dung 80% chiều ngang, chừa 10% đáy cho navbar */}
 					<div className="relative z-10 h-full w-full flex">
-						<div className="mx-auto w-[80%] h-full flex flex-col pt-16 pb-[10%]">
+						<div className="mx-auto w-[80%] h-full flex flex-col pt-[clamp(12px,3vh,48px)] pb-[10%]">
 							{/* Title */}
 							<h1 className="text-5xl md:text-6xl font-extrabold tracking-tight" style={{ color: boNoiVu.light }}>
 								{t("pages.timeline.title").toUpperCase()}
@@ -104,9 +111,37 @@ export default function Timeline() {
 									<p className="mt-2 text-xl font-bold" style={{ color: neutral.black }}>
 										{active.description}
 									</p>
-									<p className="mt-6 text-sm md:text-[13px] leading-6 max-w-[560px]" style={{ color: overlay.black[90] }}>
-										{active.content} {active.content}
-									</p>
+									{/* Text dài với tính năng xem thêm */}
+									<div className="mt-6 max-w-[560px]">
+										<div
+											className={`text-sm md:text-[13px] leading-6 transition-all duration-300 ${expandedContent ? "max-h-none" : "max-h-[120px] overflow-hidden"}`}
+											style={{ color: overlay.black[90] }}
+										>
+											{active.content} {active.content}
+										</div>
+
+										{/* Nút xem thêm/thu gọn */}
+										<button
+											onClick={() => setExpandedContent(!expandedContent)}
+											className="mt-3 text-sm font-medium text-[#9b0000] hover:text-[#7a0910] transition-colors duration-200 flex items-center gap-2"
+										>
+											{expandedContent ? (
+												<>
+													<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+													</svg>
+													Thu gọn
+												</>
+											) : (
+												<>
+													<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+													</svg>
+													Xem thêm
+												</>
+											)}
+										</button>
+									</div>
 								</div>
 
 								{/* Phải: khung slideshow */}
@@ -136,6 +171,13 @@ export default function Timeline() {
 												<path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
 											</svg>
 										</button>
+
+										{/* Text mô tả ảnh/video */}
+										<div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 text-center">
+											<p className="text-sm font-medium">
+												{active.title} - {active.description}
+											</p>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -189,7 +231,10 @@ export default function Timeline() {
 												<div key={`dot-${y}`} className="relative h-6 w-6">
 													{i === activeIdx && <div className="pointer-events-none absolute inset-0 rounded-full border-2 border-black" />}
 													<button
-														onClick={() => setActiveIdx(i)}
+														onClick={() => {
+															setActiveIdx(i);
+															setExpandedContent(false); // Reset trạng thái khi chuyển năm
+														}}
 														className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-all duration-300 ${i === activeIdx ? "h-4 w-4" : "h-3 w-3"}`}
 														style={{
 															backgroundColor: i === activeIdx ? boNoiVu.light : neutral.black,

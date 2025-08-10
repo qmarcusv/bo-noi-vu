@@ -1,75 +1,111 @@
-import { useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import MainNavbar from "../components/MainNavbar"; // dùng NavBar có sẵn
+import MainNavbar from "../components/MainNavbar";
 import { boNoiVu, neutral, overlay } from "../constants/colors";
 import { getAssetPath } from "../utils/assets";
+import { ADMIN_UNITS, PUB_UNITS } from "../data/map";
+import type { MapUnit } from "../data/map";
 
 type TabKey = "timeline" | "map" | "media" | "zone";
-type Unit = { id: string; name: string; short?: string; link?: string; logo?: string };
 
-const ADMIN_UNITS: Unit[] = [
-	{ id: "vutccb", name: "Vụ Tổ chức – Biên chế" },
-	{ id: "vuchinhquyen", name: "Vụ Chính quyền địa phương" },
-	{ id: "vuccvc", name: "Vụ Công chức – Viên chức" },
-	{ id: "vutcpng", name: "Vụ Tổ chức phi chính phủ" },
-	{ id: "vucchc", name: "Vụ Cải cách hành chính" },
-	{ id: "vucttn_bd", name: "Vụ Công tác thanh niên & Bình đẳng giới" },
-	{ id: "vuhoptacqt", name: "Vụ Hợp tác quốc tế" },
-	{ id: "vutccb2", name: "Vụ Tổ chức cán bộ" },
-	{ id: "vuphapche", name: "Vụ Pháp chế" },
-	{ id: "vukh_tc", name: "Vụ Kế hoạch – Tài chính" },
-	{ id: "thanhtra", name: "Thanh tra Bộ" },
-	{ id: "vanphong", name: "Văn phòng Bộ" },
-	{ id: "cucvanthu", name: "Cục Văn thư & Lưu trữ nhà nước", link: "https://luutru.gov.vn" },
-	{ id: "cuctienluong", name: "Cục Tiền lương & Bảo hiểm xã hội" },
-	{ id: "cucvieclam", name: "Cục Việc làm" },
-	{ id: "cucldnn", name: "Cục Quản lý lao động ngoài nước" },
-	{ id: "cucnguoicong", name: "Cục Người có công" },
-	{ id: "banthidua", name: "Ban Thi đua – Khen thưởng Trung ương", link: "http://thiduakhenthuongvn.org.vn" },
-];
-
-const PUB_UNITS: Unit[] = [
-	{ id: "ttcntt", name: "Trung tâm Công nghệ thông tin" },
-	{ id: "vienkh", name: "Viện Khoa học Tổ chức Nhà nước & Lao động" },
-	{ id: "tapchi", name: "Tạp chí Tổ chức Nhà nước & Lao động" },
-	{ id: "baodantri", name: "Báo Dân trí", link: "https://dantri.com.vn" },
-];
+function Star({ active }: { active?: boolean }) {
+	return (
+		<svg
+			viewBox="0 0 24 24"
+			className="h-[clamp(24px,2.2vw,36px)] w-[clamp(24px,2.2vw,36px)]"
+			fill={active ? "#F1B24A" : "none"}
+			stroke={active ? "#FDF7E8" : overlay.black[40]}
+			strokeWidth={active ? 0 : 2}
+		>
+			<path d="m12 2 2.95 6.34 6.99.61-5.28 4.59 1.61 6.82L12 17.77 5.73 20.36l1.61-6.82L2.06 8.95l6.99-.61L12 2z" />
+		</svg>
+	);
+}
 
 export default function Map() {
 	const { t } = useTranslation();
 	const [, setActiveTab] = useState<TabKey>("map");
+	const [selectedUnit, setSelectedUnit] = useState<MapUnit | null>(null);
+	const [isPopupOpen, setIsPopupOpen] = useState(false);
+	const [highlightedAdminIndex, setHighlightedAdminIndex] = useState(0);
+
+	const handleUnitClick = (unit: MapUnit) => {
+		setSelectedUnit(unit);
+		setIsPopupOpen(true);
+	};
+
+	const closePopup = () => {
+		setIsPopupOpen(false);
+		setSelectedUnit(null);
+	};
+	// Khóa scroll nền khi mở popup
+	useEffect(() => {
+		if (isPopupOpen) {
+			const prev = document.body.style.overflow;
+			document.body.style.overflow = "hidden";
+			return () => {
+				document.body.style.overflow = prev;
+			};
+		}
+	}, [isPopupOpen]);
+	// Handle escape key when popup is open
+	useEffect(() => {
+		const handleEscape = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				closePopup();
+			}
+		};
+
+		if (isPopupOpen) {
+			document.addEventListener("keydown", handleEscape);
+		}
+
+		return () => {
+			document.removeEventListener("keydown", handleEscape);
+		};
+	}, [isPopupOpen]);
+
+	// Auto-highlight admin units every 5 seconds
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setHighlightedAdminIndex((prevIndex) => (prevIndex + 1) % ADMIN_UNITS.length);
+		}, 5000);
+
+		return () => clearInterval(interval);
+	}, []);
+
+	const twoLinePublicHeading = useMemo(() => {
+		// Tách như ảnh: "NHÓM ĐƠN VỊ" xuống dòng "SỰ NGHIỆP CÔNG LẬP"
+		const a = "NHÓM ĐƠN VỊ";
+		const b = "SỰ NGHIỆP CÔNG LẬP";
+		return { a, b };
+	}, []);
 
 	return (
 		<div className="h-screen w-full relative overflow-hidden">
-			{/* BG layout: LEFT red strip, RIGHT white area */}
+			{/* BG layout */}
 			<div className="absolute inset-0 flex">
-				{/* LEFT: rear-rectangle (giữ tỉ lệ, cao 100%) */}
+				{/* LEFT red strip */}
 				<div className="relative h-full flex-none overflow-hidden">
 					<img src={getAssetPath("/assets/rear-rectangle.png")} alt="" className="h-full w-auto object-contain" />
 				</div>
 
-				{/* RIGHT: white area */}
+				{/* RIGHT white area */}
 				<div className="relative h-full flex-1">
 					<img src={getAssetPath("/assets/white-background.png")} alt="" className="absolute inset-0 h-full w-full object-cover" />
-
 					{/* Home */}
 					<button
-						onClick={() => {
-							const homeSection = document.getElementById("home");
-							if (homeSection) {
-								homeSection.scrollIntoView({ behavior: "smooth", block: "start" });
-							}
-						}}
-						className="absolute right-6 top-6 z-20 h-12 w-12 grid place-items-center cursor-pointer hover:opacity-90"
+						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+						className="absolute right-[clamp(8px,1.3vw,24px)] top-[clamp(8px,1.3vw,24px)] z-20 grid h-[clamp(32px,3vw,64px)] w-[clamp(32px,3vw,64px)] place-items-center hover:opacity-90"
+						aria-label="Home"
 					>
-						<img src={getAssetPath("/assets/home-icon.png")} alt="Home" className="h-12 w-12 object-contain" />
+						<img src={getAssetPath("/assets/home-icon.png")} alt="" className="h-full w-full object-contain" />
 					</button>
-
-					{/* Content: 80% width, chừa 10% đáy cho NavBar có sẵn */}
+					{/* Content box (kept 16:9 friendly) */}
 					<div className="relative z-10 h-full w-full flex">
-						<div className="mx-auto w-[80%] h-full flex flex-col pt-16 pb-[10%]">
+						<div className={["mx-auto h-full w-[92%] md:w-[86%] xl:w-[82%]", "flex flex-col", "pt-[clamp(12px,3vh,48px)] pb-[10%]"].join(" ")}>
 							{/* Title */}
-							<h1 className="text-5xl md:text-6xl font-extrabold" style={{ color: boNoiVu.light }}>
+							<h1 className="font-extrabold tracking-tight" style={{ color: boNoiVu.light, fontSize: "clamp(24px,3.2vw,56px)" }}>
 								{t("pages.map.title").toUpperCase()}
 							</h1>
 
@@ -77,90 +113,114 @@ export default function Map() {
 							<div
 								className="mt-6 w-[100%] max-w-[100%] rounded-xl border shadow px-6 py-3 text-lg font-semibold"
 								style={{
-									backgroundColor: neutral.white,
-									borderColor: overlay.black[20],
-									color: neutral.black,
+									backgroundColor: "rgba(255,255,255,0.9)",
+									borderColor: "rgba(0,0,0,0.1)",
+									color: "#000000",
 								}}
 							>
 								{t("pages.map.subtitle")}
 							</div>
 
-							{/* MAIN TWO-COLUMN SECTION (fix lệch):
-                  Left = Nhóm tổ chức hành chính, Right = Nhóm đơn vị sự nghiệp công lập */}
-							<div className="mt-8 grid grid-cols-12 gap-8 items-start">
-								{/* LEFT: ADMIN GROUP */}
+							{/* MAIN SECTION */}
+							<div className="mt-[clamp(12px,2.2vw,36px)] grid grid-cols-12 gap-[clamp(10px,1.8vw,28px)] items-start">
+								{/* LEFT GROUP */}
 								<div className="col-span-12 lg:col-span-7">
-									<h4 className="text-2xl font-extrabold text-center mb-3" style={{ color: boNoiVu.light }}>
-										{t("pages.map.adminGroup")}
+									<h4 className="text-center font-extrabold" style={{ color: boNoiVu.light, fontSize: "clamp(16px,1.8vw,28px)" }}>
+										NHÓM TỔ CHỨC HÀNH CHÍNH
 									</h4>
-									<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-										{ADMIN_UNITS.map((u, idx) => (
-											<button
-												key={u.id}
-												className="flex items-center gap-3 px-4 py-3 rounded-lg border text-left transition"
-												style={{
-													backgroundColor: idx === 0 ? boNoiVu.dark : overlay.white[80],
-													borderColor: idx === 0 ? boNoiVu.dark : overlay.black[10],
-													color: neutral.black,
-												}}
-												title={u.name}
-											>
-												<span className="inline-block h-5 w-5 rounded-full bg-yellow-400 shadow-[0_0_0_3px_rgba(255,255,255,0.85)]" />
-												<div className="font-medium">{u.name}</div>
-											</button>
-										))}
+
+									<div className="mt-[clamp(8px,1.6vw,20px)] grid grid-cols-1 sm:grid-cols-2 gap-[clamp(8px,1.2vw,16px)]">
+										{ADMIN_UNITS.map((u, idx) => {
+											const isHighlighted = idx === highlightedAdminIndex;
+											return (
+												<button
+													key={u.id}
+													onClick={() => handleUnitClick(u)}
+													className={[
+														"flex items-center gap-[clamp(8px,1vw,14px)] rounded-lg border text-left transition-all duration-500",
+														"px-[clamp(12px,1.6vw,24px)] py-[clamp(10px,1.4vw,20px)]",
+														"hover:brightness-105 cursor-pointer shadow-md hover:shadow-lg",
+														isHighlighted ? "scale-105 shadow-lg" : "",
+													].join(" ")}
+													style={{
+														backgroundColor: isHighlighted ? boNoiVu.dark : "rgba(0,0,0,0.5)",
+														borderColor: isHighlighted ? boNoiVu.dark : "rgba(255,255,255,0.2)",
+														color: isHighlighted ? "#FDF7E8" : "#ffffff",
+													}}
+													title={u.name}
+												>
+													<Star active={isHighlighted} />
+													<span className="font-medium" style={{ fontSize: "clamp(12px,1.1vw,18px)" }}>
+														{u.name}
+													</span>
+												</button>
+											);
+										})}
 									</div>
 								</div>
 
-								{/* RIGHT: PUBLIC GROUP PANEL */}
+								{/* RIGHT GROUP */}
 								<div className="col-span-12 lg:col-span-5">
 									<div
-										className="rounded-xl border p-5"
+										className="rounded-xl border p-[clamp(12px,1.8vw,28px)] shadow-md"
 										style={{
-											borderColor: overlay.black[10],
-											backgroundColor: overlay.white[80],
+											borderColor: "rgba(255,255,255,0.15)",
+											backgroundColor: "rgba(0,0,0,0.25)",
 										}}
 									>
-										<h3 className="text-2xl font-extrabold text-center leading-tight" style={{ color: boNoiVu.light }}>
-											{t("pages.map.publicGroup").split(" ").slice(0, 2).join(" ")}
+										<h3 className="text-center font-extrabold leading-tight" style={{ color: boNoiVu.light, fontSize: "clamp(16px,1.8vw,28px)" }}>
+											{twoLinePublicHeading.a}
 											<br />
-											{t("pages.map.publicGroup").split(" ").slice(2).join(" ")}
+											{twoLinePublicHeading.b}
 										</h3>
-										<div className="mt-4 flex flex-col gap-4">
+
+										<div className="mt-[clamp(10px,1.8vw,28px)] flex flex-col gap-[clamp(8px,1.2vw,16px)]">
 											{PUB_UNITS.map((u) => (
-												<a
+												<button
 													key={u.id}
-													href={u.link || "#"}
-													target={u.link ? "_blank" : undefined}
-													className="flex items-center gap-4 rounded-xl border px-4 py-4 text-left hover:ring-2 transition"
-													style={
-														{
-															backgroundColor: overlay.white[90],
-															borderColor: overlay.black[10],
-															"--tw-ring-color": `${boNoiVu.light}40`,
-														} as any
-													}
+													onClick={() => handleUnitClick(u)}
+													className="flex items-center gap-[clamp(10px,1.4vw,20px)] rounded-xl border px-[clamp(12px,1.6vw,24px)] py-[clamp(10px,1.4vw,20px)] hover:ring-2 transition cursor-pointer shadow-md hover:shadow-lg"
+													style={{
+														backgroundColor: "rgba(0,0,0,0.5)",
+														borderColor: "rgba(255,255,255,0.2)",
+														// subtle brand ring
+														// @ts-ignore
+														"--tw-ring-color": `${boNoiVu.light}40`,
+													}}
 												>
 													<div
-														className="h-14 w-14 rounded-full border-2 grid place-items-center text-xs font-bold"
+														className="grid place-items-center rounded-full border-2 flex-none"
 														style={{
-															borderColor: overlay.black[20],
-															color: neutral.black,
+															height: "clamp(36px,3.6vw,72px)",
+															width: "clamp(36px,3.6vw,72px)",
+															borderColor: "rgba(255,255,255,0.3)",
+															color: "#ffffff",
+															fontSize: "clamp(10px,0.9vw,16px)",
+															fontWeight: 700,
 														}}
 													>
 														{u.logo ? <img src={u.logo} className="h-full w-full rounded-full object-cover" /> : "LOGO"}
 													</div>
-													<div className="flex-1">
-														<div className="font-semibold" style={{ color: neutral.black }}>
+
+													<div className="min-w-0 flex-1">
+														<div className="font-semibold truncate" style={{ color: "#ffffff", fontSize: "clamp(12px,1.1vw,18px)" }} title={u.name}>
 															{u.name}
 														</div>
-														{u.link && (
-															<div className="text-sm truncate" style={{ color: overlay.black[60] }}>
-																{u.link}
+														{u.website && (
+															<div
+																className="truncate"
+																style={{
+																	color: "rgba(255,255,255,0.8)",
+																	fontSize: "clamp(10px,0.95vw,16px)",
+																	marginTop: "clamp(2px,0.3vw,6px)",
+																}}
+																title={u.website}
+															>
+																{u.website}
 															</div>
 														)}
 													</div>
-												</a>
+												</button>
 											))}
 										</div>
 									</div>
@@ -169,12 +229,121 @@ export default function Map() {
 						</div>
 					</div>
 
-					{/* MainNavbar ở cuối trang */}
+					{/* Bottom navbar (reserved height ~10%) */}
 					<div className="absolute bottom-0 left-0 right-0 h-[10%] z-20">
 						<MainNavbar active="map" onChange={setActiveTab} />
 					</div>
 				</div>
 			</div>
+
+			{/* Unit Modal Popup */}
+			{isPopupOpen && selectedUnit && (
+				<>
+					{/* Backdrop làm tối + hơi blur, click để đóng */}
+					<div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-[1px]" onClick={closePopup} aria-hidden="true" />
+
+					{/* Modal */}
+					<div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+						<div
+							role="dialog"
+							aria-modal="true"
+							className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border shadow-2xl"
+							style={{ backgroundColor: neutral.white, borderColor: overlay.black[10] }}
+							onClick={(e) => e.stopPropagation()} // chặn click lan ra backdrop
+						>
+							{/* Header */}
+							<div className="sticky top-0 flex items-center justify-between p-6 border-b" style={{ borderColor: overlay.black[10], backgroundColor: boNoiVu.light }}>
+								<h2 className="text-2xl font-bold text-white truncate pr-4" title={selectedUnit.name}>
+									{selectedUnit.name}
+								</h2>
+								<button onClick={closePopup} className="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 transition flex items-center justify-center" aria-label="Đóng">
+									<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+									</svg>
+								</button>
+							</div>
+
+							{/* Content */}
+							<div className="p-6 space-y-6">
+								{selectedUnit.description && (
+									<div>
+										<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
+											Mô tả
+										</h3>
+										<p className="text-gray-700 leading-relaxed">{selectedUnit.description}</p>
+									</div>
+								)}
+
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+									{selectedUnit.address && (
+										<div>
+											<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
+												Địa chỉ
+											</h3>
+											<p className="text-gray-700">{selectedUnit.address}</p>
+										</div>
+									)}
+									{selectedUnit.phone && (
+										<div>
+											<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
+												Điện thoại
+											</h3>
+											<p className="text-gray-700">{selectedUnit.phone}</p>
+										</div>
+									)}
+									{selectedUnit.email && (
+										<div>
+											<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
+												Email
+											</h3>
+											<p className="text-gray-700 break-all">{selectedUnit.email}</p>
+										</div>
+									)}
+									{selectedUnit.website && (
+										<div>
+											<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
+												Website
+											</h3>
+											<a href={selectedUnit.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline break-all">
+												{selectedUnit.website}
+											</a>
+										</div>
+									)}
+								</div>
+
+								{selectedUnit.logo && (
+									<div className="text-center">
+										<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
+											Logo
+										</h3>
+										<img src={selectedUnit.logo} alt={`Logo ${selectedUnit.name}`} className="mx-auto max-w-32 max-h-32 object-contain rounded-lg border" style={{ borderColor: overlay.black[20] }} />
+									</div>
+								)}
+							</div>
+
+							{/* Footer */}
+							<div className="sticky bottom-0 p-4 border-t bg-gray-50" style={{ borderColor: overlay.black[10] }}>
+								<div className="flex justify-end space-x-3">
+									{selectedUnit.website && (
+										<a
+											href={selectedUnit.website}
+											target="_blank"
+											rel="noopener noreferrer"
+											className="px-6 py-2 rounded-lg font-medium transition"
+											style={{ backgroundColor: boNoiVu.light, color: neutral.white }}
+										>
+											Mở website
+										</a>
+									)}
+									<button onClick={closePopup} className="px-6 py-2 rounded-lg font-medium border transition hover:bg-gray-100" style={{ borderColor: overlay.black[20], color: neutral.black }}>
+										Đóng
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</>
+			)}
 		</div>
 	);
 }

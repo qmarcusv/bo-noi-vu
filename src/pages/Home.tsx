@@ -1,3 +1,4 @@
+// src/pages/Home.tsx
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../components/LanguageSwitcher";
@@ -5,92 +6,129 @@ import { getAssetPath } from "../utils/assets";
 
 export default function Home() {
 	const { t } = useTranslation();
+
 	const handleStartExplore = () => {
-		// Scroll xuống section menu (section thứ 2)
 		const menuSection = document.getElementById("menu");
-		if (menuSection) {
-			menuSection.scrollIntoView({ behavior: "smooth" });
-		}
+		if (menuSection) menuSection.scrollIntoView({ behavior: "smooth" });
+	};
+
+	// Kích thước co giãn theo viewport (đã hạ min để vừa laptop)
+	const SZ = {
+		logoW: "clamp(64px, 4.6vw, 150px)",
+		logoH: "clamp(80px, 6vw, 190px)",
+		labelSize: "clamp(16px, 1.05vw, 26px)",
+		containerMaxW: "min(88vw, 1800px)",
+		videoMaxW: "min(78vw, 1800px)",
+		videoH: "clamp(240px, 42dvh, 58dvh)", // CHÍNH: luôn vừa 1 màn hình
+		cardRadius: "clamp(12px, 1vw, 24px)",
+		playBtn: "clamp(52px, 4.6vw, 110px)",
+		playIcon: "clamp(22px, 2.2vw, 44px)",
+		ctaPX: "clamp(14px, 1.4vw, 34px)",
+		ctaPY: "clamp(9px, 0.9vw, 18px)",
+		ctaFont: "clamp(18px, 1.5vw, 30px)",
+		arrow: "clamp(24px, 1.8vw, 52px)",
+		topPad: "clamp(12px, 3vh, 48px)",
+		rowGap: "clamp(10px, 2.2vh, 28px)",
+		bottomGap: "clamp(8px, 2vh, 24px)",
 	};
 
 	return (
 		<section
-			className="relative min-h-screen w-full overflow-hidden text-white"
+			className="relative min-h-[100dvh] w-full overflow-hidden text-white"
 			style={{
+				// Fallback màu nền để không lộ mép đen + cover tuyệt đối
+				backgroundColor: "#7a0910",
 				backgroundImage: `url('${getAssetPath("/assets/red-background.png")}')`,
+				backgroundRepeat: "no-repeat",
 				backgroundSize: "cover",
-				backgroundPosition: "center",
+				backgroundPosition: "center center",
 			}}
 		>
 			<div className="absolute inset-0 bg-black/20" />
 
-			{/* Language Switcher ở góc trên phải */}
-			<div className="absolute top-4 right-4 z-50">
+			{/* Language switcher ở góc dưới bên phải */}
+			<div className="absolute bottom-4 right-4 z-50">
 				<LanguageSwitcher />
 			</div>
 
-			<div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col items-center">
-				{/* LOGO BỘ NỘI VỤ Ở GIỮA TRÊN */}
-				<div className="pt-8 sm:pt-10 md:pt-12 lg:pt-14 flex flex-col items-center">
-					<img
-						src={getAssetPath("/assets/bo-noi-vu-icon.png")}
-						alt={t("common.boNoiVu")}
-						className="select-none"
-						draggable={false}
-						style={{
-							width: "64px",
-							height: "80px",
-							maxWidth: "64px",
-							maxHeight: "80px",
-						}}
-					/>
+			{/* Dùng GRID 4 hàng: Logo | Video (co giãn) | CTA | Arrow */}
+			<div
+				className="relative z-10 mx-auto grid min-h-[100dvh] w-full justify-items-center items-center"
+				style={{
+					maxWidth: SZ.containerMaxW,
+					gridTemplateRows: "auto 1fr auto auto",
+					rowGap: SZ.rowGap,
+					paddingTop: SZ.topPad,
+					paddingBottom: `calc(${SZ.bottomGap} + env(safe-area-inset-bottom, 0px))`,
+				}}
+			>
+				{/* 1) LOGO */}
+				<div className="flex flex-col items-center">
+					<img src={getAssetPath("/assets/bo-noi-vu-icon.png")} alt={t("common.boNoiVu")} className="select-none" draggable={false} style={{ width: SZ.logoW, height: SZ.logoH }} />
 				</div>
 
-				{/* KHUNG VIDEO Ở GIỮA */}
-				<div className="flex-1 w-full flex items-center justify-center px-4">
-					<div className="w-full max-w-[960px]">
-						<div className="relative aspect-[16/9] rounded-2xl ring-1 ring-white/20 bg-black/25 overflow-hidden">
+				{/* 2) VIDEO (giới hạn theo vh để luôn vừa màn) */}
+				<div className="w-full flex items-center justify-center px-4">
+					<div className="w-full flex flex-col items-center" style={{ maxWidth: SZ.videoMaxW }}>
+						<div
+							className="relative bg-black/25 overflow-hidden ring-1 ring-white/25"
+							style={{
+								borderRadius: SZ.cardRadius,
+								height: SZ.videoH, // CHÍNH: đặt chiều cao cố định theo vh
+								aspectRatio: "16 / 9", // giữ tỉ lệ, width sẽ tự tính
+								maxWidth: "100%", // đảm bảo không vượt quá container
+							}}
+						>
 							<div className="absolute inset-0 flex items-center justify-center">
-								<div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:w-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center ring-1 ring-white/30">
-									<svg viewBox="0 0 24 24" className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 fill-white">
+								<div
+									className="backdrop-blur-sm ring-1 ring-white/30 flex items-center justify-center"
+									style={{
+										width: SZ.playBtn,
+										height: SZ.playBtn,
+										borderRadius: "20px",
+										background: "rgba(255,255,255,.18)",
+									}}
+								>
+									<svg viewBox="0 0 24 24" className="fill-white" style={{ width: SZ.playIcon, height: SZ.playIcon }}>
 										<path d="M8 5v14l11-7z" />
 									</svg>
 								</div>
 							</div>
 						</div>
-						<p className="mt-3 text-center text-xs sm:text-sm md:text-base opacity-90 tracking-wide">{t("common.videoAutoplay")}</p>
+						<p className="mt-3 text-center opacity-90 tracking-wide" style={{ fontSize: SZ.labelSize }}>
+							{t("common.videoAutoplay")}
+						</p>
 					</div>
 				</div>
 
-				{/* NÚT "BẮT ĐẦU KHÁM PHÁ" VỚI TEXT-BACKGROUND.PNG */}
+				{/* 3) CTA */}
 				<motion.button
 					whileHover={{ scale: 1.02 }}
 					whileTap={{ scale: 0.98 }}
-					className="relative mb-4 sm:mb-6 md:mb-8"
+					className="relative"
 					onClick={handleStartExplore}
 					aria-label={t("common.startExploring")}
 					style={{
 						backgroundImage: `url('${getAssetPath("/assets/text-background.png")}')`,
 						backgroundSize: "cover",
 						backgroundPosition: "center",
+						padding: `${SZ.ctaPY} ${SZ.ctaPX}`,
+						fontSize: SZ.ctaFont,
+						borderRadius: "12px",
 					}}
 				>
-					<span className="block px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4 text-base sm:text-lg md:text-xl font-semibold">{t("common.startExploring")}</span>
+					<span className="block font-semibold">{t("common.startExploring")}</span>
 				</motion.button>
 
-				{/* MŨI TÊN XUỐNG VỚI DOWN-ARROW.PNG */}
+				{/* 4) ARROW (luôn nằm trong khung nhờ grid) */}
 				<img
 					src={getAssetPath("/assets/down-arrow.png")}
 					onClick={handleStartExplore}
 					alt=""
-					className="mb-6 sm:mb-8 md:mb-10 opacity-95 select-none cursor-pointer"
+					aria-hidden
+					className="opacity-95 select-none cursor-pointer animate-bounce"
 					draggable={false}
-					style={{
-						width: "20px",
-						height: "20px",
-						maxWidth: "20px",
-						maxHeight: "20px",
-					}}
+					style={{ width: SZ.arrow, height: SZ.arrow }}
 				/>
 			</div>
 		</section>
