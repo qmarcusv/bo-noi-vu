@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import MainNavbar from "../components/MainNavbar";
 
 type TabKey = "timeline" | "map" | "media" | "zone";
 
 export default function Experience() {
-	const { t } = useTranslation();
-	const [activeTab, setActiveTab] = useState<TabKey>("zone");
+	const [, setActiveTab] = useState<TabKey>("media");
 
 	return (
 		<div className="h-screen w-full relative overflow-hidden">
@@ -34,11 +32,11 @@ export default function Experience() {
 						<img src="/assets/home-icon.png" alt="Home" className="h-12 w-12 object-contain" />
 					</button>
 
-					{/* Content */}
+					{/* Content: 80% width, chừa 10% đáy cho NavBar */}
 					<div className="relative z-10 h-full w-full flex">
 						<div className="mx-auto w-[80%] h-full flex flex-col pt-16 pb-[10%] text-black">
 							{/* Title */}
-							<h1 className="text-5xl md:text-6xl font-extrabold text-[#9b0000]">KHU VỰC “TRẢI NGHIỆM”</h1>
+							<h1 className="text-5xl md:text-6xl font-extrabold text-[#9b0000]">KHU VỰC "TRẢI NGHIỆM"</h1>
 
 							{/* Filter / tagline line */}
 							<div className="mt-6 w-[100%] max-w-[100%] bg-white rounded-xl border border-black/15 shadow px-6 py-3 text-lg font-semibold">Các video giới thiệu bộ và các đơn vị thuộc bộ</div>
@@ -89,6 +87,11 @@ export default function Experience() {
 							{/* (Tuỳ chọn) Mini quiz khu vực nhỏ – sẽ gắn sau nếu bạn muốn */}
 							{/* <div className="mt-6">...</div> */}
 						</div>
+					</div>
+
+					{/* MainNavbar ở cuối trang */}
+					<div className="absolute bottom-0 left-0 right-0 h-[10%] z-20">
+						<MainNavbar active="media" onChange={setActiveTab} />
 					</div>
 				</div>
 			</div>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import MainNavbar from "../components/MainNavbar"; // dùng NavBar có sẵn
 import { boNoiVu, neutral, overlay } from "../constants/colors";
@@ -36,12 +36,12 @@ const PUB_UNITS: Unit[] = [
 
 export default function Map() {
 	const { t } = useTranslation();
-	const [activeTab, setActiveTab] = useState<TabKey>("map");
-	const allUnits = useMemo(() => {
-		const m: Record<string, Unit> = {};
-		[...ADMIN_UNITS, ...PUB_UNITS].forEach((u) => (m[u.id] = u));
-		return m;
-	}, []);
+	const [, setActiveTab] = useState<TabKey>("map");
+	// const allUnits = useMemo(() => {
+	// 	const m: Record<string, Unit> = {};
+	// 	[...ADMIN_UNITS, ...PUB_UNITS].forEach((u) => (m[u.id] = u));
+	// 	return m;
+	// }, []);
 
 	return (
 		<div className="h-screen w-full relative overflow-hidden">

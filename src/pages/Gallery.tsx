@@ -42,7 +42,7 @@ const PHOTOS: PhotoItem[] = [
 
 export default function Gallery() {
 	const { t } = useTranslation();
-	const [activeTab, setActiveTab] = useState<"timeline" | "map" | "media" | "zone">("media");
+	const [, setActiveTab] = useState<"timeline" | "map" | "media" | "zone">("media");
 	const [current, setCurrent] = useState<VideoItem>(VIDEOS[0]);
 
 	// Carousel scroll

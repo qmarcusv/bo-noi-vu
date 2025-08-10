@@ -13,7 +13,7 @@ type TimelineEvent = {
 export default function Timeline() {
 	const { t } = useTranslation();
 	const [activeIdx, setActiveIdx] = useState(1);
-	const [activeTab, setActiveTab] = useState<"timeline" | "map" | "media" | "zone">("timeline");
+	const [, setActiveTab] = useState<"timeline" | "map" | "media" | "zone">("timeline");
 
 	// Lấy dữ liệu từ file ngôn ngữ
 	const timelineEvents: TimelineEvent[] = useMemo(() => {

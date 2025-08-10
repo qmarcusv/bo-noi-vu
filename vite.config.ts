@@ -3,11 +3,11 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
 	plugins: [tailwindcss(), react()],
-	base: "/bo-noi-vu/",
+	base: command === "serve" ? "/" : "/bo-noi-vu/",
 	build: {
 		outDir: "dist",
 		sourcemap: false,
 	},
-});
+}));
