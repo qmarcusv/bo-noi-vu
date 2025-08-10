@@ -9,7 +9,7 @@
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"tailwind:init": "tailwindcss init -p",
-		"deploy": "pnpm run build && gh-pages -d dist"
+		"deploy": "pnpm run build"
 	},
 	"dependencies": {
 		"framer-motion": "^12.23.12",

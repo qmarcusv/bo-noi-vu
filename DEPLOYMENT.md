@@ -6,7 +6,7 @@
 
    ```bash
    git add .
-   git commit -m "Add GitHub Pages deployment"
+   git commit -m "Update GitHub Pages deployment workflow"
    git push origin main
    ```
 
@@ -14,17 +14,15 @@
 
    - Vào repository trên GitHub
    - Vào Settings > Pages
-   - Source: Deploy from a branch
-   - Branch: gh-pages
-   - Folder: / (root)
+   - Source: GitHub Actions
    - Click Save
 
 3. **GitHub Actions sẽ tự động:**
    - Build project
-   - Deploy lên branch gh-pages
+   - Deploy lên GitHub Pages
    - Website sẽ có sẵn tại: `https://[username].github.io/bo-noi-vu/`
 
-## Cách 2: Deploy thủ công
+## Cách 2: Deploy thủ công (nếu cần)
 
 1. **Build project:**
 
@@ -33,25 +31,27 @@
    ```
 
 2. **Deploy lên GitHub Pages:**
-
-   ```bash
-   pnpm run deploy
-   ```
-
-3. **Push branch gh-pages:**
-   ```bash
-   git push origin gh-pages
-   ```
+   - Sử dụng GitHub Actions workflow tự động
+   - Hoặc upload thủ công thư mục `dist/` lên branch `gh-pages`
 
 ## Lưu ý quan trọng
 
-- **Base URL:** Đã cấu hình trong `vite.config.ts` là `/bo-noi-vu/`
+- **Base URL:** Đã cấu hình trong `vite.config.ts` là `/bo-noi-vu/` (chỉ khi build production)
 - **Build output:** Thư mục `dist/`
-- **Branch deploy:** `gh-pages`
+- **Deploy method:** GitHub Actions (không cần branch gh-pages)
 - **Tự động deploy:** Mỗi khi push lên branch `main`
+
+## Workflow mới
+
+Workflow sử dụng GitHub Actions chính thức:
+
+- `actions/configure-pages@v4`
+- `actions/upload-pages-artifact@v3`
+- `actions/deploy-pages@v4`
 
 ## Troubleshooting
 
 - Nếu website không load được, kiểm tra base URL trong `vite.config.ts`
 - Đảm bảo repository có quyền truy cập GitHub Pages
-- Kiểm tra GitHub Actions logs nếu có lỗi
+- Kiểm tra GitHub Actions logs trong tab Actions
+- Đảm bảo đã bật GitHub Pages với source "GitHub Actions"
