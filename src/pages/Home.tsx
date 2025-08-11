@@ -5,7 +5,7 @@ import { useAudioUnlock, applyAutoplayAttributes } from "../utils/audioUnlock";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { getAssetPath } from "../utils/assets";
-import { generatedHomeVideos } from "../data/generated-home-videos";
+ 
 
 export default function Home() {
 	const { t } = useTranslation();
@@ -129,9 +129,9 @@ export default function Home() {
 							}}
 						>
 							{/* Video autoplay */}
-							<video
+                            <video
 								ref={videoRef}
-								src={getAssetPath((generatedHomeVideos as ReadonlyArray<{ id: string; src: string }>)?.[0]?.src || "/assets/home/intro.mp4")}
+                                src={getAssetPath("/assets/home/quocca.mp4")}
 								className="absolute inset-0 w-full h-full object-cover"
 								controls={!showPlayOverlay}
 								autoPlay
