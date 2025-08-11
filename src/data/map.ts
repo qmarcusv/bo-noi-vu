@@ -195,3 +195,49 @@ export const PUB_UNITS: MapUnit[] = [
 		email: "baodantri@moha.gov.vn",
 	},
 ];
+
+// Text constants for Map component
+export const MAP_TEXTS = {
+	vi: {
+		adminGroup: "NHÓM TỔ CHỨC HÀNH CHÍNH",
+		publicGroup: {
+			line1: "NHÓM ĐƠN VỊ",
+			line2: "SỰ NGHIỆP CÔNG LẬP",
+		},
+		modal: {
+			description: "Mô tả",
+			address: "Địa chỉ",
+			phone: "Điện thoại",
+			email: "Email",
+			website: "Website",
+			logo: "Logo",
+			openWebsite: "Mở website",
+			close: "Đóng",
+		},
+		ariaLabels: {
+			home: "Trang chủ",
+			close: "Đóng",
+		},
+	},
+	en: {
+		adminGroup: "ADMINISTRATIVE ORGANIZATION GROUP",
+		publicGroup: {
+			line1: "PUBLIC SERVICE",
+			line2: "UNITS GROUP",
+		},
+		modal: {
+			description: "Description",
+			address: "Address",
+			phone: "Phone",
+			email: "Email",
+			website: "Website",
+			logo: "Logo",
+			openWebsite: "Open Website",
+			close: "Close",
+		},
+		ariaLabels: {
+			home: "Home",
+			close: "Close",
+		},
+	},
+};

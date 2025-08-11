@@ -1,11 +1,17 @@
 // src/pages/Home.tsx
 import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { useAudioUnlock, applyAutoplayAttributes } from "../utils/audioUnlock";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { getAssetPath } from "../utils/assets";
+import { generatedHomeVideos } from "../data/generated-home-videos";
 
 export default function Home() {
 	const { t } = useTranslation();
+	const videoRef = useRef<HTMLVideoElement>(null);
+	const [showPlayOverlay, setShowPlayOverlay] = useState(false);
+	const audioOn = useAudioUnlock();
 
 	const handleStartExplore = () => {
 		const menuSection = document.getElementById("menu");
@@ -30,6 +36,49 @@ export default function Home() {
 		topPad: "clamp(12px, 3vh, 48px)",
 		rowGap: "clamp(10px, 2.2vh, 28px)",
 		bottomGap: "clamp(8px, 2vh, 24px)",
+	};
+
+	// Autoplay video và đồng bộ trạng thái âm thanh toàn cục
+	useEffect(() => {
+		const v = videoRef.current;
+		if (!v) return;
+
+		applyAutoplayAttributes(v, audioOn);
+
+		const tryPlay = async () => {
+			try {
+				await v.play();
+				setShowPlayOverlay(false);
+			} catch {
+				setShowPlayOverlay(true);
+			}
+		};
+
+		const handleCanPlay = () => {
+			if (v.autoplay) tryPlay();
+		};
+		const handleLoadedData = () => {
+			if (v.readyState >= 2 && v.autoplay) tryPlay();
+		};
+
+		v.addEventListener("canplay", handleCanPlay, { once: true });
+		v.addEventListener("loadeddata", handleLoadedData, { once: true });
+		return () => {
+			v.removeEventListener("canplay", handleCanPlay);
+			v.removeEventListener("loadeddata", handleLoadedData);
+		};
+	}, [audioOn]);
+
+	const handlePlayOverlayClick = async () => {
+		const v = videoRef.current;
+		if (!v) return;
+		try {
+			v.muted = !audioOn;
+			// @ts-ignore
+			v.playsInline = true;
+			await v.play();
+			setShowPlayOverlay(false);
+		} catch {}
 	};
 
 	return (
@@ -79,21 +128,37 @@ export default function Home() {
 								maxWidth: "100%", // đảm bảo không vượt quá container
 							}}
 						>
-							<div className="absolute inset-0 flex items-center justify-center">
-								<div
-									className="backdrop-blur-sm ring-1 ring-white/30 flex items-center justify-center"
-									style={{
-										width: SZ.playBtn,
-										height: SZ.playBtn,
-										borderRadius: "20px",
-										background: "rgba(255,255,255,.18)",
-									}}
-								>
-									<svg viewBox="0 0 24 24" className="fill-white" style={{ width: SZ.playIcon, height: SZ.playIcon }}>
-										<path d="M8 5v14l11-7z" />
-									</svg>
+							{/* Video autoplay */}
+							<video
+								ref={videoRef}
+								src={getAssetPath((generatedHomeVideos as ReadonlyArray<{ id: string; src: string }>)?.[0]?.src || "/assets/home/intro.mp4")}
+								className="absolute inset-0 w-full h-full object-cover"
+								controls={!showPlayOverlay}
+								autoPlay
+								muted={!audioOn}
+								// @ts-ignore
+								playsInline
+								preload="auto"
+								loop
+								onPlay={() => setShowPlayOverlay(false)}
+							>
+								{t("pages.timeline.video.notSupported")}
+							</video>
+
+							{showPlayOverlay && (
+								<div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+									<button
+										onClick={handlePlayOverlayClick}
+										className="bg-white/90 hover:bg-white text-black rounded-[20px] p-4 transition-all duration-200 hover:scale-110 ring-1 ring-black/10"
+										style={{ width: SZ.playBtn, height: SZ.playBtn }}
+										aria-label={t("common.videoAutoplay")}
+									>
+										<svg viewBox="0 0 24 24" className="fill-black" style={{ width: SZ.playIcon, height: SZ.playIcon }}>
+											<path d="M8 5v14l11-7z" />
+										</svg>
+									</button>
 								</div>
-							</div>
+							)}
 						</div>
 						<p className="mt-3 text-center opacity-90 tracking-wide" style={{ fontSize: SZ.labelSize }}>
 							{t("common.videoAutoplay")}

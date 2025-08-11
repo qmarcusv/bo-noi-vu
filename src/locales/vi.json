@@ -2,7 +2,8 @@
 	"common": {
 		"boNoiVu": "Bộ Nội Vụ",
 		"startExploring": "BẮT ĐẦU KHÁM PHÁ",
-		"videoAutoplay": "VIDEO AUTOPLAY"
+		"videoAutoplay": "VIDEO AUTOPLAY",
+		"language": "vi"
 	},
 	"navigation": {
 		"timeline": "Dòng thời gian",
@@ -39,35 +40,54 @@
 			"subtitle": "Thành lập Bộ Nội vụ – Các giai đoạn thay đổi lớn – Các sự kiện nổi bật",
 			"events": {
 				"2002": {
-					"title": "Thành lập Bộ Nội vụ",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+					"title": "Khởi đầu hành trình",
+					"description": "Bước đầu tiên trong sự nghiệp",
+					"content": "Năm 2002 đánh dấu sự khởi đầu của một hành trình mới. Đây là thời điểm quan trọng khi những ý tưởng đầu tiên được hình thành và những bước đi đầu tiên được thực hiện. Chúng ta đã bắt đầu với một tầm nhìn rõ ràng và quyết tâm mạnh mẽ để tạo ra những điều có ý nghĩa."
 				},
 				"2004": {
-					"title": "Cải cách hành chính",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+					"title": "Phát triển và mở rộng",
+					"description": "Giai đoạn tăng trưởng mạnh mẽ",
+					"content": "Đến năm 2004, chúng ta đã có những bước tiến đáng kể trong việc phát triển và mở rộng hoạt động. Những thành công ban đầu đã tạo nền tảng vững chắc cho sự phát triển trong tương lai. Chúng ta đã học được nhiều bài học quý báu và xây dựng được những mối quan hệ quan trọng."
 				},
 				"2005": {
-					"title": "Ban hành Luật mới",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+					"title": "Đột phá và sáng tạo",
+					"description": "Thời kỳ đổi mới và sáng tạo",
+					"content": "Năm 2005 là một năm đặc biệt với nhiều đột phá và sáng tạo. Chúng ta đã giới thiệu những sản phẩm và dịch vụ mới, đáp ứng nhu cầu ngày càng tăng của khách hàng. Sự sáng tạo và đổi mới đã trở thành động lực chính thúc đẩy sự phát triển của chúng ta."
 				},
 				"2007": {
-					"title": "Ký kết hợp tác",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+					"title": "Củng cố vị thế",
+					"description": "Xây dựng vị thế vững chắc",
+					"content": "Năm 2007 đánh dấu việc củng cố vị thế của chúng ta trong thị trường. Chúng ta đã xây dựng được uy tín và sự tin tưởng từ khách hàng, đối tác và cộng đồng. Những thành tựu đạt được đã khẳng định hướng đi đúng đắn của chúng ta."
 				},
 				"2008": {
-					"title": "Cơ cấu tổ chức mới",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Curabitur non nulla sit amet nisl tempus convallis quis ac lectus."
+					"title": "Hướng tới tương lai",
+					"description": "Chuẩn bị cho những thách thức mới",
+					"content": "Năm 2008 là năm chúng ta hướng tới tương lai với những kế hoạch và mục tiêu mới. Chúng ta đã chuẩn bị sẵn sàng để đối mặt với những thách thức mới và nắm bắt những cơ hội mới. Tương lai đang mở ra với nhiều tiềm năng và hứa hẹn."
 				}
 			},
 			"navigation": {
 				"previous": "Năm trước",
 				"next": "Năm sau",
 				"jumpTo": "Chuyển đến năm"
+			},
+			"video": {
+				"play": "Phát video",
+				"pause": "Tạm dừng",
+				"loading": "Đang tải...",
+				"error": "Không thể phát video",
+				"timeline": "Timeline video",
+				"autoSync": "Tự động đồng bộ với timeline",
+				"notSupported": "Trình duyệt của bạn không hỗ trợ video.",
+				"currentTime": "Thời gian hiện tại",
+				"syncInfo": "Video tự động đồng bộ với timeline"
+			},
+			"content": {
+				"expand": "Xem thêm",
+				"collapse": "Thu gọn"
+			},
+			"media": {
+				"imageDescription": "Mô tả hình ảnh",
+				"videoDescription": "Mô tả video"
 			}
 		},
 		"map": {

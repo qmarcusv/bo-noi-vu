@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import MainNavbar from "../components/MainNavbar";
 import { boNoiVu, neutral, overlay } from "../constants/colors";
 import { getAssetPath } from "../utils/assets";
-import { ADMIN_UNITS, PUB_UNITS } from "../data/map";
+import { ADMIN_UNITS, PUB_UNITS, MAP_TEXTS } from "../data/map";
 import type { MapUnit } from "../data/map";
 
 type TabKey = "timeline" | "map" | "media" | "zone";
@@ -14,7 +14,7 @@ function Star({ active }: { active?: boolean }) {
 			viewBox="0 0 24 24"
 			className="h-[clamp(24px,2.2vw,36px)] w-[clamp(24px,2.2vw,36px)]"
 			fill={active ? "#F1B24A" : "none"}
-			stroke={active ? "#FDF7E8" : overlay.black[40]}
+			stroke={active ? "#FDF7E8" : overlay.white[50]}
 			strokeWidth={active ? 0 : 2}
 		>
 			<path d="m12 2 2.95 6.34 6.99.61-5.28 4.59 1.61 6.82L12 17.77 5.73 20.36l1.61-6.82L2.06 8.95l6.99-.61L12 2z" />
@@ -76,10 +76,10 @@ export default function Map() {
 
 	const twoLinePublicHeading = useMemo(() => {
 		// Tách như ảnh: "NHÓM ĐƠN VỊ" xuống dòng "SỰ NGHIỆP CÔNG LẬP"
-		const a = "NHÓM ĐƠN VỊ";
-		const b = "SỰ NGHIỆP CÔNG LẬP";
+		const a = MAP_TEXTS[t("common.language") as "vi" | "en"].publicGroup.line1;
+		const b = MAP_TEXTS[t("common.language") as "vi" | "en"].publicGroup.line2;
 		return { a, b };
-	}, []);
+	}, [t]);
 
 	return (
 		<div className="h-screen w-full relative overflow-hidden">
@@ -97,7 +97,7 @@ export default function Map() {
 					<button
 						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
 						className="absolute right-[clamp(8px,1.3vw,24px)] top-[clamp(8px,1.3vw,24px)] z-20 grid h-[clamp(32px,3vw,64px)] w-[clamp(32px,3vw,64px)] place-items-center hover:opacity-90"
-						aria-label="Home"
+						aria-label={MAP_TEXTS[t("common.language") as "vi" | "en"].ariaLabels.home}
 					>
 						<img src={getAssetPath("/assets/home-icon.png")} alt="" className="h-full w-full object-contain" />
 					</button>
@@ -126,7 +126,7 @@ export default function Map() {
 								{/* LEFT GROUP */}
 								<div className="col-span-12 lg:col-span-7">
 									<h4 className="text-center font-extrabold" style={{ color: boNoiVu.light, fontSize: "clamp(16px,1.8vw,28px)" }}>
-										NHÓM TỔ CHỨC HÀNH CHÍNH
+										{MAP_TEXTS[t("common.language") as "vi" | "en"].adminGroup}
 									</h4>
 
 									<div className="mt-[clamp(8px,1.6vw,20px)] grid grid-cols-1 sm:grid-cols-2 gap-[clamp(8px,1.2vw,16px)]">
@@ -199,7 +199,7 @@ export default function Map() {
 															fontWeight: 700,
 														}}
 													>
-														{u.logo ? <img src={u.logo} className="h-full w-full rounded-full object-cover" /> : "LOGO"}
+														{u.logo ? <img src={u.logo} className="h-full w-full rounded-full object-cover" /> : MAP_TEXTS[t("common.language") as "vi" | "en"].modal.logo}
 													</div>
 
 													<div className="min-w-0 flex-1">
@@ -256,7 +256,11 @@ export default function Map() {
 								<h2 className="text-2xl font-bold text-white truncate pr-4" title={selectedUnit.name}>
 									{selectedUnit.name}
 								</h2>
-								<button onClick={closePopup} className="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 transition flex items-center justify-center" aria-label="Đóng">
+								<button
+									onClick={closePopup}
+									className="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 transition flex items-center justify-center"
+									aria-label={MAP_TEXTS[t("common.language") as "vi" | "en"].ariaLabels.close}
+								>
 									<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
 									</svg>
@@ -268,7 +272,7 @@ export default function Map() {
 								{selectedUnit.description && (
 									<div>
 										<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
-											Mô tả
+											{MAP_TEXTS[t("common.language") as "vi" | "en"].modal.description}
 										</h3>
 										<p className="text-gray-700 leading-relaxed">{selectedUnit.description}</p>
 									</div>
@@ -278,7 +282,7 @@ export default function Map() {
 									{selectedUnit.address && (
 										<div>
 											<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
-												Địa chỉ
+												{MAP_TEXTS[t("common.language") as "vi" | "en"].modal.address}
 											</h3>
 											<p className="text-gray-700">{selectedUnit.address}</p>
 										</div>
@@ -286,7 +290,7 @@ export default function Map() {
 									{selectedUnit.phone && (
 										<div>
 											<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
-												Điện thoại
+												{MAP_TEXTS[t("common.language") as "vi" | "en"].modal.phone}
 											</h3>
 											<p className="text-gray-700">{selectedUnit.phone}</p>
 										</div>
@@ -294,7 +298,7 @@ export default function Map() {
 									{selectedUnit.email && (
 										<div>
 											<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
-												Email
+												{MAP_TEXTS[t("common.language") as "vi" | "en"].modal.email}
 											</h3>
 											<p className="text-gray-700 break-all">{selectedUnit.email}</p>
 										</div>
@@ -302,7 +306,7 @@ export default function Map() {
 									{selectedUnit.website && (
 										<div>
 											<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
-												Website
+												{MAP_TEXTS[t("common.language") as "vi" | "en"].modal.website}
 											</h3>
 											<a href={selectedUnit.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline break-all">
 												{selectedUnit.website}
@@ -314,7 +318,7 @@ export default function Map() {
 								{selectedUnit.logo && (
 									<div className="text-center">
 										<h3 className="text-lg font-semibold mb-2" style={{ color: boNoiVu.light }}>
-											Logo
+											{MAP_TEXTS[t("common.language") as "vi" | "en"].modal.logo}
 										</h3>
 										<img src={selectedUnit.logo} alt={`Logo ${selectedUnit.name}`} className="mx-auto max-w-32 max-h-32 object-contain rounded-lg border" style={{ borderColor: overlay.black[20] }} />
 									</div>
@@ -332,11 +336,11 @@ export default function Map() {
 											className="px-6 py-2 rounded-lg font-medium transition"
 											style={{ backgroundColor: boNoiVu.light, color: neutral.white }}
 										>
-											Mở website
+											{MAP_TEXTS[t("common.language") as "vi" | "en"].modal.openWebsite}
 										</a>
 									)}
 									<button onClick={closePopup} className="px-6 py-2 rounded-lg font-medium border transition hover:bg-gray-100" style={{ borderColor: overlay.black[20], color: neutral.black }}>
-										Đóng
+										{MAP_TEXTS[t("common.language") as "vi" | "en"].modal.close}
 									</button>
 								</div>
 							</div>

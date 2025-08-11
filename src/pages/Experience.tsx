@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import MainNavbar from "../components/MainNavbar";
 import { getAssetPath } from "../utils/assets";
 
 type TabKey = "timeline" | "map" | "media" | "zone";
 
 export default function Experience() {
+	const { t } = useTranslation();
 	const [, setActiveTab] = useState<TabKey>("media");
 
 	// Kích thước co giãn theo viewport (tối ưu cho cả 70 inch và 17 inch)
@@ -80,7 +82,7 @@ export default function Experience() {
 						>
 							{/* Title */}
 							<h1 className="font-extrabold text-[#9b0000]" style={{ fontSize: SZ.titleSize }}>
-								KHU VỰC "TRẢI NGHIỆM"
+								{t("pages.experience.title")}
 							</h1>
 
 							{/* Filter / tagline line */}
@@ -92,7 +94,7 @@ export default function Experience() {
 									color: "#000000",
 								}}
 							>
-								Các video giới thiệu bộ và các đơn vị thuộc bộ
+								{t("pages.experience.subtitle")}
 							</div>
 
 							{/* Main grid */}
@@ -109,10 +111,10 @@ export default function Experience() {
 									<div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ gap: SZ.gap }}>
 										<div>
 											<h3 className="font-extrabold text-[#9b0000] mb-3" style={{ fontSize: SZ.sectionTitleSize }}>
-												Cơ sở dữ liệu quốc gia về cán bộ, công chức, viên chức
+												{t("pages.experience.blocks.database.title")}
 											</h3>
 											<p className="leading-6" style={{ fontSize: SZ.bodyTextSize }}>
-												Mô tả ngắn gọn về CSDL Quốc gia về CBCCVC: mục tiêu, phạm vi dữ liệu và lợi ích khi sử dụng cho người dân và cơ quan quản lý.
+												{t("pages.experience.blocks.database.description")}
 											</p>
 											<button
 												className="mt-4 bg-[#9b0000] text-white px-safe py-safe rounded font-semibold hover:opacity-90"
@@ -122,7 +124,7 @@ export default function Experience() {
 													padding: SZ.padding,
 												}}
 											>
-												KHÁM PHÁ NGAY
+												{t("pages.experience.blocks.database.button")}
 											</button>
 										</div>
 										<div className="bg-gray-500/80 rounded-lg aspect-video" />
@@ -133,10 +135,10 @@ export default function Experience() {
 										<div className="bg-gray-500/80 rounded-lg aspect-video" />
 										<div>
 											<h3 className="font-extrabold text-[#9b0000] mb-3" style={{ fontSize: SZ.sectionTitleSize }}>
-												CSDL tài liệu lưu trữ Phông Lưu trữ NN Việt Nam – Nền tảng Lưu trữ số quốc gia
+												{t("pages.experience.blocks.archive.title")}
 											</h3>
 											<p className="leading-6" style={{ fontSize: SZ.bodyTextSize }}>
-												Giới thiệu ngắn về hệ thống, khả năng tra cứu và tiếp cận tài liệu lưu trữ số của quốc gia phục vụ học thuật, dịch vụ công và nghiên cứu.
+												{t("pages.experience.blocks.archive.description")}
 											</p>
 											<button
 												className="mt-4 bg-[#9b0000] text-white px-safe py-safe rounded font-semibold hover:opacity-90"
@@ -146,7 +148,7 @@ export default function Experience() {
 													padding: SZ.padding,
 												}}
 											>
-												KHÁM PHÁ NGAY
+												{t("pages.experience.blocks.archive.button")}
 											</button>
 										</div>
 									</div>
@@ -165,7 +167,7 @@ export default function Experience() {
 												marginTop: SZ.gap,
 											}}
 										>
-											PHOTOBOOTH
+											{t("pages.experience.photobooth.title")}
 										</h2>
 										{/* Action */}
 										<button
@@ -176,7 +178,7 @@ export default function Experience() {
 												padding: SZ.padding,
 											}}
 										>
-											CHỤP ẢNH
+											{t("pages.experience.photobooth.button")}
 										</button>
 										{/* Arrow + QR note */}
 										<div className="mt-2 text-center text-white" style={{ marginTop: SZ.gap }}>
@@ -190,7 +192,7 @@ export default function Experience() {
 													marginTop: SZ.gap,
 												}}
 											>
-												Quét QR để tải ảnh.
+												{t("pages.experience.photobooth.qrNote")}
 											</p>
 										</div>
 									</div>

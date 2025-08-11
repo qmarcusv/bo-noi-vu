@@ -2,7 +2,8 @@
 	"common": {
 		"boNoiVu": "Ministry of Home Affairs",
 		"startExploring": "START EXPLORING",
-		"videoAutoplay": "VIDEO AUTOPLAY"
+		"videoAutoplay": "VIDEO AUTOPLAY",
+		"language": "en"
 	},
 	"navigation": {
 		"timeline": "Timeline",
@@ -39,35 +40,54 @@
 			"subtitle": "Establishment of Ministry of Home Affairs – Major Change Periods – Outstanding Events",
 			"events": {
 				"2002": {
-					"title": "Establishment of Ministry of Home Affairs",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+					"title": "Beginning of the Journey",
+					"description": "First step in the career",
+					"content": "The year 2002 marked the beginning of a new journey. This was an important moment when the first ideas were formed and the first steps were taken. We started with a clear vision and strong determination to create meaningful things."
 				},
 				"2004": {
-					"title": "Administrative Reform",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+					"title": "Development and Expansion",
+					"description": "Strong growth period",
+					"content": "By 2004, we had made significant progress in developing and expanding operations. Initial successes had created a solid foundation for future development. We had learned many valuable lessons and built important relationships."
 				},
 				"2005": {
-					"title": "New Law Issuance",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+					"title": "Breakthrough and Innovation",
+					"description": "Period of renewal and creativity",
+					"content": "2005 was a special year with many breakthroughs and innovations. We introduced new products and services, meeting the growing needs of customers. Creativity and innovation had become the main driving force for our development."
 				},
 				"2007": {
-					"title": "Partnership Agreement",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+					"title": "Consolidating Position",
+					"description": "Building a solid position",
+					"content": "2007 marked the consolidation of our position in the market. We had built credibility and trust from customers, partners and the community. The achievements had confirmed the correct direction of our path."
 				},
 				"2008": {
-					"title": "New Organizational Structure",
-					"description": "Lorem ipsum dolor sit amet",
-					"content": "Curabitur non nulla sit amet nisl tempus convallis quis ac lectus."
+					"title": "Towards the Future",
+					"description": "Preparing for new challenges",
+					"content": "2008 was the year we looked to the future with new plans and goals. We were ready to face new challenges and seize new opportunities. The future was opening up with many potentials and promises."
 				}
 			},
 			"navigation": {
 				"previous": "Previous year",
 				"next": "Next year",
 				"jumpTo": "Jump to year"
+			},
+			"video": {
+				"play": "Play video",
+				"pause": "Pause",
+				"loading": "Loading...",
+				"error": "Cannot play video",
+				"timeline": "Video timeline",
+				"autoSync": "Auto-sync with timeline",
+				"notSupported": "Your browser does not support video.",
+				"currentTime": "Current time",
+				"syncInfo": "Video automatically syncs with timeline"
+			},
+			"content": {
+				"expand": "Show more",
+				"collapse": "Collapse"
+			},
+			"media": {
+				"imageDescription": "Image description",
+				"videoDescription": "Video description"
 			}
 		},
 		"map": {

@@ -48,11 +48,18 @@ export default function MainNavbar({ active, onChange }: { active?: TabKey; onCh
 									scrollToSection(it.targetId);
 									onChange?.(it.key);
 								}}
-								className={`w-full h-full font-semibold transition-all duration-300 cursor-pointer relative z-20 flex items-center justify-center
-									${isActive ? "bg-[#9b0000] text-white" : "text-gray-700"}`}
+								className={`w-full h-full font-semibold transition-all duration-300 cursor-pointer relative z-20 flex items-center justify-center ${isActive ? "text-white" : "text-gray-700"}`}
 								style={{
 									fontSize: isActive ? "clamp(14px, 1.4vw, 20px)" : "clamp(12px, 1.2vw, 16px)",
 									fontWeight: isActive ? 700 : 600,
+									...(isActive
+										? {
+												backgroundImage: `url(${getAssetPath("/assets/red-component-background.png")})`,
+												backgroundSize: "cover",
+												backgroundPosition: "center",
+												backgroundRepeat: "no-repeat",
+										  }
+										: {}),
 								}}
 							>
 								{it.label}

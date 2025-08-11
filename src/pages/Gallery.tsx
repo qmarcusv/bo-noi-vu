@@ -2,49 +2,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import MainNavbar from "../components/MainNavbar";
 import { getAssetPath } from "../utils/assets";
+import { GALLERY_TEXTS, galleryVideos, galleryPhotos } from "../data/gallery";
+import { useAudioUnlock, applyAutoplayAttributes } from "../utils/audioUnlock";
 
-type VideoItem = {
-	id: string;
-	title: string;
-	src: string; // link video (mp4 / youtube embed nếu bạn muốn)
-	thumb: string; // ảnh thumbnail
-	subtitle?: string;
-};
-
-type PhotoItem = {
-	id: string;
-	src: string;
-	span?: 1 | 2 | 3; // độ rộng tương đối trong lưới ngang
-};
-
-const VIDEOS: VideoItem[] = [
-	{ id: "v1", title: "VIDEO SAMPLE 1", src: "", thumb: "/assets/video-thumb-1.jpg" },
-	{ id: "v2", title: "VIDEO SAMPLE 2", src: "", thumb: "/assets/video-thumb-2.jpg" },
-	{ id: "v3", title: "VIDEO SAMPLE 3", src: "", thumb: "/assets/video-thumb-3.jpg" },
-	{ id: "v4", title: "VIDEO SAMPLE 4", src: "", thumb: "/assets/video-thumb-4.jpg" },
-	{ id: "v5", title: "VIDEO SAMPLE 5", src: "", thumb: "/assets/video-thumb-5.jpg" },
-	{ id: "v6", title: "VIDEO SAMPLE 6", src: "", thumb: "/assets/video-thumb-6.jpg" },
-];
-
-const PHOTOS: PhotoItem[] = [
-	{ id: "p1", src: "/assets/photo-1.jpg", span: 2 },
-	{ id: "p2", src: "/assets/photo-2.jpg", span: 1 },
-	{ id: "p3", src: "/assets/photo-3.jpg", span: 3 },
-	{ id: "p4", src: "/assets/photo-4.jpg", span: 2 },
-	{ id: "p5", src: "/assets/photo-5.jpg", span: 1 },
-	{ id: "p6", src: "/assets/photo-6.jpg", span: 2 },
-	{ id: "p7", src: "/assets/photo-7.jpg", span: 1 },
-	{ id: "p8", src: "/assets/photo-8.jpg", span: 2 },
-	{ id: "p9", src: "/assets/photo-9.jpg", span: 1 },
-	{ id: "p10", src: "/assets/photo-10.jpg", span: 3 },
-	{ id: "p11", src: "/assets/photo-11.jpg", span: 2 },
-	{ id: "p12", src: "/assets/photo-12.jpg", span: 1 },
-];
+type VideoItem = (typeof galleryVideos)[number];
 
 export default function Gallery() {
 	const { t } = useTranslation();
 	const [, setActiveTab] = useState<"timeline" | "map" | "media" | "zone">("media");
-	const [current, setCurrent] = useState<VideoItem>(VIDEOS[0]);
+	const [currentIndex, setCurrentIndex] = useState<number>(0);
+	const current: VideoItem = galleryVideos[currentIndex] ?? galleryVideos[0];
+	const videoRef = useRef<HTMLVideoElement>(null);
+	const [showPlayOverlay, setShowPlayOverlay] = useState(false);
+	const audioOn = useAudioUnlock();
 
 	// Kích thước co giãn theo viewport (tối ưu cho cả 70 inch và 17 inch)
 	const SZ = {
@@ -102,6 +72,55 @@ export default function Gallery() {
 		return () => el.removeEventListener("scroll", onScroll);
 	}, []);
 
+	// Tự động play video giống Timeline và đồng bộ audioOn
+	useEffect(() => {
+		const v = videoRef.current;
+		if (!v) return;
+
+		applyAutoplayAttributes(v, audioOn);
+
+		const tryPlay = async () => {
+			try {
+				await v.play();
+				setShowPlayOverlay(false);
+			} catch (err) {
+				setShowPlayOverlay(true);
+			}
+		};
+
+		const handleCanPlay = () => {
+			if (v.autoplay) tryPlay();
+		};
+		const handleLoadedData = () => {
+			if (v.readyState >= 2 && v.autoplay) tryPlay();
+		};
+
+		v.addEventListener("canplay", handleCanPlay, { once: true });
+		v.addEventListener("loadeddata", handleLoadedData, { once: true });
+		// cleanup
+		return () => {
+			v.removeEventListener("canplay", handleCanPlay);
+			v.removeEventListener("loadeddata", handleLoadedData);
+		};
+	}, [currentIndex, audioOn]);
+
+	const handlePlayOverlayClick = async () => {
+		const v = videoRef.current;
+		if (!v) return;
+		try {
+			v.muted = !audioOn;
+			// @ts-ignore
+			v.playsInline = true;
+			await v.play();
+			setShowPlayOverlay(false);
+		} catch {}
+	};
+
+	const handleVideoEnded = () => {
+		const next = (currentIndex + 1) % galleryVideos.length;
+		setCurrentIndex(next);
+	};
+
 	const onTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		const wrap = photosRef.current;
 		const track = trackRef.current;
@@ -115,43 +134,46 @@ export default function Gallery() {
 	const VideoPlayer = useMemo(
 		() => (
 			<div className="relative rounded-xl overflow-hidden bg-[#8b0000] grid place-items-center" style={{ height: SZ.videoHeight }}>
-				{/* Nếu đã có src thật: thay div bên dưới bằng <video ... controls/> */}
-				{current.src ? (
-					<video controls className="h-full w-full object-cover" src={current.src} />
-				) : (
-					<>
-						<div
-							className="rounded-2xl border-2 border-white/70 grid place-items-center"
-							style={{
-								height: `clamp(48px, 6vw, 96px)`,
-								width: `clamp(48px, 6vw, 96px)`,
-							}}
+				<video
+					ref={videoRef}
+					className="h-full w-full object-cover"
+					src={getAssetPath(current.src)}
+					// Không hiển thị controls nếu overlay đang hiện do autoplay bị chặn
+					controls={!showPlayOverlay}
+					autoPlay
+					muted={!audioOn}
+					// @ts-ignore
+					playsInline
+					preload="auto"
+					onEnded={handleVideoEnded}
+				>
+					{t("pages.timeline.video.notSupported")}
+				</video>
+
+				{showPlayOverlay && (
+					<div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
+						<button
+							onClick={handlePlayOverlayClick}
+							className="bg-white/90 hover:bg-white text-black rounded-full p-4 transition-all duration-200 hover:scale-110"
+							aria-label={GALLERY_TEXTS[t("common.language") as "vi" | "en"].playButton}
 						>
-							{/* play icon */}
-							<svg
-								viewBox="0 0 24 24"
-								className="fill-white/95"
-								style={{
-									height: `clamp(24px, 3vw, 48px)`,
-									width: `clamp(24px, 3vw, 48px)`,
-								}}
-							>
+							<svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
 								<path d="M8 5v14l11-7z" />
 							</svg>
-						</div>
-					</>
+						</button>
+					</div>
 				)}
 
-				{/* Text mô tả video - chỉ hiển thị cho video chính */}
+				{/* Text mô tả video */}
 				<div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 text-center">
 					<p className="text-sm font-medium">
 						{current.title}
-						{current.subtitle && ` - ${current.subtitle}`}
+						{current.description ? ` - ${current.description}` : ""}
 					</p>
 				</div>
 			</div>
 		),
-		[current, SZ.videoHeight]
+		[current, SZ.videoHeight, showPlayOverlay, t]
 	);
 
 	return (
@@ -180,10 +202,11 @@ export default function Gallery() {
 							height: SZ.buttonSize,
 							width: SZ.buttonSize,
 						}}
+						aria-label={GALLERY_TEXTS[t("common.language") as "vi" | "en"].ariaLabels.home}
 					>
 						<img
 							src={getAssetPath("/assets/home-icon.png")}
-							alt="Home"
+							alt={GALLERY_TEXTS[t("common.language") as "vi" | "en"].ariaLabels.home}
 							className="object-contain"
 							style={{
 								height: SZ.buttonSize,
@@ -224,7 +247,7 @@ export default function Gallery() {
 								{/* Left: Video Library */}
 								<div className="col-span-12 lg:col-span-7">
 									<h3 className="text-center font-extrabold mb-3" style={{ fontSize: SZ.sectionTitleSize }}>
-										{t("pages.gallery.videoLibrary")}
+										{GALLERY_TEXTS[t("common.language") as "vi" | "en"].videoLibrary}
 									</h3>
 
 									{VideoPlayer}
@@ -234,7 +257,7 @@ export default function Gallery() {
 										<button
 											onClick={() => scrollByCard(-1)}
 											className="rounded-lg border border-black/20 grid place-items-center hover:bg-black/5"
-											aria-label="Prev"
+											aria-label={GALLERY_TEXTS[t("common.language") as "vi" | "en"].ariaLabels.prev}
 											style={{
 												height: SZ.buttonSize,
 												width: SZ.buttonSize,
@@ -254,9 +277,14 @@ export default function Gallery() {
 											</svg>
 										</button>
 
-										<div ref={carouselRef} className="flex-1 overflow-x-auto no-scrollbar scroll-smooth" style={{ scrollbarWidth: "none" }}>
+										<div
+											ref={carouselRef}
+											className="flex-1 overflow-x-auto no-scrollbar scroll-smooth"
+											style={{ scrollbarWidth: "none" }}
+											aria-label={GALLERY_TEXTS[t("common.language") as "vi" | "en"].carousel}
+										>
 											<div className="flex" style={{ gap: SZ.gap }}>
-												{VIDEOS.map((v) => (
+												{galleryVideos.map((v, i) => (
 													<div
 														key={v.id}
 														data-card
@@ -266,11 +294,17 @@ export default function Gallery() {
 															maxWidth: SZ.cardMaxWidth,
 														}}
 													>
-														<button onClick={() => setCurrent(v)} className="w-full" title={v.title}>
+														<button onClick={() => setCurrentIndex(i)} className="w-full" title={v.title}>
 															<div className="relative bg-black/5" style={{ height: SZ.thumbHeight }}>
 																{/* Background image cho video thumbnail */}
 																<img src={getAssetPath("/assets/gray-component-background.png")} alt="" className="absolute inset-0 h-full w-full object-cover" />
-																<img src={v.thumb} onError={(e) => ((e.target as HTMLImageElement).style.display = "none")} className="relative z-10 h-full w-full object-cover" alt={v.title} />
+																<img
+																	src={v.thumb ? getAssetPath(v.thumb) : ""}
+																	onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
+																	className="relative z-10 h-full w-full object-cover"
+																	alt={v.title}
+																	title={v.title}
+																/>
 																<div className="absolute inset-0 grid place-items-center z-20">
 																	<div
 																		className="rounded-xl border border-black/20 bg-white/80 grid place-items-center"
@@ -304,7 +338,7 @@ export default function Gallery() {
 										<button
 											onClick={() => scrollByCard(1)}
 											className="rounded-lg border border-black/20 grid place-items-center hover:bg-black/5"
-											aria-label="Next"
+											aria-label={GALLERY_TEXTS[t("common.language") as "vi" | "en"].ariaLabels.next}
 											style={{
 												height: SZ.buttonSize,
 												width: SZ.buttonSize,
@@ -329,7 +363,7 @@ export default function Gallery() {
 								{/* Right: Photo Library */}
 								<div className="col-span-12 lg:col-span-5">
 									<h3 className="text-center font-extrabold mb-3" style={{ fontSize: SZ.sectionTitleSize }}>
-										{t("pages.gallery.photoLibrary")}
+										{GALLERY_TEXTS[t("common.language") as "vi" | "en"].photoLibrary}
 									</h3>
 
 									<div className="rounded-xl border border-black/15 bg-transparent p-4" style={{ padding: SZ.padding }}>
@@ -346,9 +380,9 @@ export default function Gallery() {
 													minHeight: SZ.photoGridHeight,
 												}}
 											>
-												{PHOTOS.map((p) => (
+												{galleryPhotos.map((p) => (
 													<div key={p.id} style={{ gridColumn: `span ${p.span ?? 1} / span ${p.span ?? 1}` }} className="relative rounded-lg overflow-hidden bg-gray-500">
-														<img src={p.src} onError={(e) => ((e.target as HTMLImageElement).style.display = "none")} className="absolute inset-0 h-full w-full object-cover" alt="" />
+														<img src={getAssetPath(p.src)} onError={(e) => ((e.target as HTMLImageElement).style.display = "none")} className="absolute inset-0 h-full w-full object-cover" alt="" />
 
 														{/* Text mô tả ảnh - đã loại bỏ theo yêu cầu */}
 													</div>
@@ -364,13 +398,6 @@ export default function Gallery() {
 										</div>
 									</div>
 								</div>
-							</div>
-
-							{/* Gợi ý icon liên kết tới CSDL/website đơn vị (tuỳ nơi bạn muốn chèn) */}
-							<div className="mt-4" style={{ marginTop: SZ.gap }}>
-								<span className="inline-flex items-center gap-1" style={{ fontSize: `clamp(12px, 1vw, 16px)` }}>
-									{t("pages.gallery.iconHint")}
-								</span>
 							</div>
 						</div>
 					</div>
